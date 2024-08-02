@@ -41,7 +41,6 @@ public class Main {
         System.out.println(task1);
 
         subtask3.setTaskStatus(TaskStatus.DONE);
-        taskManager.updateEpicTaskStatus(epic2);
         System.out.println(epic2);
 
         taskManager.deleteTaskById(1);
