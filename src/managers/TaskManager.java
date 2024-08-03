@@ -34,7 +34,7 @@ public class TaskManager {
             return epicTask.getSubtaskEpic();
         } else {
             System.out.println("Эпика с таким id не существует");
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -129,8 +129,9 @@ public class TaskManager {
     public void updateEpicTask(Epic updatedEpicTask) {
         int epicId = updatedEpicTask.getId();
         if (epics.containsKey(epicId)) {
-            epics.put(epicId, updatedEpicTask);
-            updateEpicTaskStatus(updatedEpicTask);
+            Epic epic = epics.get(epicId);
+            epic.setDescription(updatedEpicTask.getDescription());
+            epic.setName(updatedEpicTask.getName());
         } else {
             System.out.println("Эпика с таким id не существует");
         }
