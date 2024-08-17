@@ -1,4 +1,4 @@
-import managers.TaskManager;
+import managers.InMemoryTaskManager;
 import enums.TaskStatus;
 import tasks.Epic;
 import tasks.Subtask;
@@ -8,7 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TaskManager taskManager = new TaskManager();
+        InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
         Task task1 = new Task("Помыть машину", "В четверг нужно помыть машину", TaskStatus.NEW);
         Task task2 = new Task("Приготовить ужин", "Приготовить котлеты с пюрешкой",
@@ -16,6 +16,10 @@ public class Main {
 
         System.out.println(taskManager.addNewTask(task1));
         System.out.println(taskManager.addNewTask(task2));
+
+        Task task3 = new Task("Сделать работу", "123", TaskStatus.DONE);
+        taskManager.updateTask(task3);
+        taskManager.getTasks();
 
         Epic epic1 = new Epic("Сделать работу", "Нужно обзвонить потенциальных клиентов",
                 TaskStatus.NEW);
