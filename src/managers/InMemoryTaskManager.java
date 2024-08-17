@@ -20,17 +20,17 @@ public class InMemoryTaskManager implements TaskManager {
     protected final List<Task> historyTask = new ArrayList<>();
 
     @Override
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 
     @Override
-    public ArrayList<Subtask> getSubTasks() {
+    public List<Subtask> getSubTasks() {
         return new ArrayList<>(subtasks.values());
     }
 
     @Override
-    public ArrayList<Epic> getEpics() {
+    public List<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
 
