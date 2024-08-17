@@ -28,6 +28,9 @@ class InMemoryTaskManagerTest {
 
         assertNotNull(taskManager.getTasks(), "Список тасков пуст");
         assertEquals(task, anotherTask, "задачи не совпадают по id");
+        assertEquals(task.getName(), anotherTask.getName(), "имя задачи не совпадает");
+        assertEquals(task.getDescription(), anotherTask.getDescription(), "описание задачи не совпадает");
+        assertEquals(task.getTaskStatus(), anotherTask.getTaskStatus(), "статус задачи не совпадает");
     }
 
     @Test
@@ -40,8 +43,12 @@ class InMemoryTaskManagerTest {
         int subTaskId = subtask.getId();
         Task anotherSubTask = taskManager.getSubtaskById(subTaskId);
 
-        assertNotNull(taskManager.getSubTasks(), "Список эпиков пуст");
-        assertEquals(subtask, anotherSubTask, "эпики не совпадают по id");
+        assertNotNull(taskManager.getSubTasks(), "Список подзадач пуст");
+        assertEquals(subtask, anotherSubTask, "подзадачи не совпадают по id");
+        assertEquals(subtask.getName(), anotherSubTask.getName(), "имя подзадачи не совпадает");
+        assertEquals(subtask.getDescription(), anotherSubTask.getDescription(), "описание подзадачи не " +
+                "совпадает");
+        assertEquals(subtask.getTaskStatus(), anotherSubTask.getTaskStatus(), "статус подзадачи не совпадает");
     }
 
     @Test
@@ -53,5 +60,8 @@ class InMemoryTaskManagerTest {
 
         assertNotNull(taskManager.getEpics(), "Список эпиков пуст");
         assertEquals(epic, anotherEpic, "эпики не совпадают по id");
+        assertEquals(epic.getName(), anotherEpic.getName(), "имя эпика не совпадает");
+        assertEquals(epic.getDescription(), anotherEpic.getDescription(), "описание эпика не совпадает");
+        assertEquals(epic.getTaskStatus(), anotherEpic.getTaskStatus(), "статус эпика не совпадает");
     }
 }
