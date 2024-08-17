@@ -3,15 +3,16 @@ package tasks;
 import enums.TaskStatus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    protected final ArrayList<Subtask> subtaskEpic = new ArrayList<>();
+    protected final List<Subtask> subtaskEpic = new ArrayList<>();
 
     public Epic(String name, String description, TaskStatus taskStatus) {
         super(name, description, taskStatus);
     }
 
-    public ArrayList<Subtask> getSubtaskEpic() {
+    public List<Subtask> getSubtaskEpic() {
         return subtaskEpic;
     }
 
