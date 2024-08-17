@@ -6,12 +6,19 @@ import java.util.Objects;
 
 public class Task {
 
+    protected int id;
     protected String name;
     protected String description;
-    protected int id;
     protected TaskStatus taskStatus;
 
     public Task(String name, String description, TaskStatus taskStatus) {
+        this.name = name;
+        this.description = description;
+        this.taskStatus = taskStatus;
+    }
+
+    public Task(int id, String name, String description, TaskStatus taskStatus) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;

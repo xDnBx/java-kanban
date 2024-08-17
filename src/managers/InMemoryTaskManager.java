@@ -17,7 +17,7 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
-    protected final List<Task> historyTask = new ArrayList<>();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public List<Task> getTasks() {
@@ -70,20 +70,35 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTaskById(int taskId) {
-        addTaskToHistory(tasks.get(taskId));
-        return tasks.get(taskId);
+        Task task = tasks.get(taskId);
+        if (task != null) {
+            historyManager.add(task);
+        } else {
+            System.out.println("Задачи с таким id не существует, попробуйте еще раз");
+        }
+        return task;
     }
 
     @Override
     public Subtask getSubtaskById(int subtaskId) {
-        addTaskToHistory(subtasks.get(subtaskId));
-        return subtasks.get(subtaskId);
+        Subtask subtask = subtasks.get(subtaskId);
+        if (subtask != null) {
+            historyManager.add(subtask);
+        } else {
+            System.out.println("Подзадачи с таким id не существует, попробуйте еще раз");
+        }
+        return subtask;
     }
 
     @Override
     public Epic getEpicById(int epicId) {
-        addTaskToHistory(epics.get(epicId));
-        return epics.get(epicId);
+        Epic epic = epics.get(epicId);
+        if (epic != null) {
+            historyManager.add(epic);
+        } else {
+            System.out.println("Эпика с таким id не существует, попробуйте еще раз");
+        }
+        return epic;
     }
 
     @Override
@@ -201,17 +216,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        if (historyTask.isEmpty()) {
-            return null;
-        }
-        return new ArrayList<>(historyTask);
-    }
-
-    private void addTaskToHistory(Task taskToHistory) {
-        if (historyTask.size() >= 10) {
-            historyTask.removeFirst();
-        }
-        historyTask.add(taskToHistory);
+        return historyManager.getHistory();
     }
 
     private void updateEpicTaskStatus(Epic epicTask) {
