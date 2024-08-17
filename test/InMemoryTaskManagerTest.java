@@ -7,6 +7,8 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -23,14 +25,17 @@ class InMemoryTaskManagerTest {
     void CanAddNewTaskAndGetTaskById() {
         Task task = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewTask(task);
-        int taskId = task.getId();
-        Task anotherTask = taskManager.getTaskById(taskId);
+        final int taskId = task.getId();
+        final Task savedTask = taskManager.getTaskById(taskId);
+        final List<Task> tasks = taskManager.getTasks();
 
-        assertNotNull(taskManager.getTasks(), "Список тасков пуст");
-        assertEquals(task, anotherTask, "задачи не совпадают по id");
-        assertEquals(task.getName(), anotherTask.getName(), "имя задачи не совпадает");
-        assertEquals(task.getDescription(), anotherTask.getDescription(), "описание задачи не совпадает");
-        assertEquals(task.getTaskStatus(), anotherTask.getTaskStatus(), "статус задачи не совпадает");
+        assertNotNull(tasks, "Список тасков пуст");
+        assertEquals(task, savedTask, "задачи не совпадают по id");
+        assertEquals(task.getName(), savedTask.getName(), "имя задачи не совпадает");
+        assertEquals(task.getDescription(), savedTask.getDescription(), "описание задачи не совпадает");
+        assertEquals(task.getTaskStatus(), savedTask.getTaskStatus(), "статус задачи не совпадает");
+        assertEquals(1, tasks.size(), "Неверное количество задач.");
+        assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
     }
 
     @Test
@@ -40,28 +45,34 @@ class InMemoryTaskManagerTest {
         Subtask subtask = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
                 epic.getId());
         taskManager.addNewSubtask(subtask);
-        int subTaskId = subtask.getId();
-        Task anotherSubTask = taskManager.getSubtaskById(subTaskId);
+        final int subTaskId = subtask.getId();
+        final Subtask savedSubTask = taskManager.getSubtaskById(subTaskId);
+        final List<Subtask> subTasks = taskManager.getSubTasks();
 
-        assertNotNull(taskManager.getSubTasks(), "Список подзадач пуст");
-        assertEquals(subtask, anotherSubTask, "подзадачи не совпадают по id");
-        assertEquals(subtask.getName(), anotherSubTask.getName(), "имя подзадачи не совпадает");
-        assertEquals(subtask.getDescription(), anotherSubTask.getDescription(), "описание подзадачи не " +
+        assertNotNull(subTasks, "Список подзадач пуст");
+        assertEquals(subtask, savedSubTask, "подзадачи не совпадают по id");
+        assertEquals(subtask.getName(), savedSubTask.getName(), "имя подзадачи не совпадает");
+        assertEquals(subtask.getDescription(), savedSubTask.getDescription(), "описание подзадачи не " +
                 "совпадает");
-        assertEquals(subtask.getTaskStatus(), anotherSubTask.getTaskStatus(), "статус подзадачи не совпадает");
+        assertEquals(subtask.getTaskStatus(), savedSubTask.getTaskStatus(), "статус подзадачи не совпадает");
+        assertEquals(1, subTasks.size(), "Неверное количество задач.");
+        assertEquals(subtask, subTasks.getFirst(), "Задачи не совпадают.");
     }
 
     @Test
     void CanAddNewEpicAndGetEpicById() {
         Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewEpic(epic);
-        int epicId = epic.getId();
-        Task anotherEpic = taskManager.getEpicById(epicId);
+        final int epicId = epic.getId();
+        final Epic savedEpic = taskManager.getEpicById(epicId);
+        final List<Epic> epics = taskManager.getEpics();
 
         assertNotNull(taskManager.getEpics(), "Список эпиков пуст");
-        assertEquals(epic, anotherEpic, "эпики не совпадают по id");
-        assertEquals(epic.getName(), anotherEpic.getName(), "имя эпика не совпадает");
-        assertEquals(epic.getDescription(), anotherEpic.getDescription(), "описание эпика не совпадает");
-        assertEquals(epic.getTaskStatus(), anotherEpic.getTaskStatus(), "статус эпика не совпадает");
+        assertEquals(epic, savedEpic, "эпики не совпадают по id");
+        assertEquals(epic.getName(), savedEpic.getName(), "имя эпика не совпадает");
+        assertEquals(epic.getDescription(), savedEpic.getDescription(), "описание эпика не совпадает");
+        assertEquals(epic.getTaskStatus(), savedEpic.getTaskStatus(), "статус эпика не совпадает");
+        assertEquals(1, epics.size(), "Неверное количество задач.");
+        assertEquals(epic, epics.getFirst(), "Задачи не совпадают.");
     }
 }
