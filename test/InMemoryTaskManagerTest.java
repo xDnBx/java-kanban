@@ -11,6 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InMemoryTaskManagerTest {
 
@@ -74,5 +75,42 @@ class InMemoryTaskManagerTest {
         assertEquals(epic.getTaskStatus(), savedEpic.getTaskStatus(), "статус эпика не совпадает");
         assertEquals(1, epics.size(), "Неверное количество задач.");
         assertEquals(epic, epics.getFirst(), "Задачи не совпадают.");
+    }
+
+    @Test
+    void clearAllTasks() {
+        Task task1 = new Task(1, "Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewTask(task1);
+        Task task2 = new Task(1, "Купить мясо", "В мясном магазине", TaskStatus.IN_PROGRESS);
+        taskManager.addNewTask(task2);
+        taskManager.clearTasks();
+
+        assertTrue(taskManager.getTasks().isEmpty(), "Список тасков не пуст");
+    }
+
+    @Test
+    void clearAllSubTasks() {
+        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewEpic(epic);
+        Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
+                epic.getId());
+        taskManager.addNewSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Купить куриные крылья", "В мясном", TaskStatus.IN_PROGRESS,
+                epic.getId());
+        taskManager.addNewSubtask(subtask2);
+        taskManager.clearSubtasks();
+
+        assertTrue(taskManager.getSubTasks().isEmpty(), "Список тасков не пуст");
+    }
+
+    @Test
+    void clearAllEpics() {
+        Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewEpic(epic1);
+        Epic epic2 = new Epic("Купить древесный уголь", "В гипермаркете", TaskStatus.IN_PROGRESS);
+        taskManager.addNewEpic(epic2);
+        taskManager.clearEpicTasks();
+
+        assertTrue(taskManager.getEpics().isEmpty(), "Список тасков не пуст");
     }
 }
