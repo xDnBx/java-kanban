@@ -100,7 +100,7 @@ class InMemoryTaskManagerTest {
         taskManager.addNewSubtask(subtask2);
         taskManager.clearSubtasks();
 
-        assertTrue(taskManager.getSubTasks().isEmpty(), "Список тасков не пуст");
+        assertTrue(taskManager.getSubTasks().isEmpty(), "Список подзадач не пуст");
     }
 
     @Test
@@ -111,6 +111,71 @@ class InMemoryTaskManagerTest {
         taskManager.addNewEpic(epic2);
         taskManager.clearEpicTasks();
 
-        assertTrue(taskManager.getEpics().isEmpty(), "Список тасков не пуст");
+        assertTrue(taskManager.getEpics().isEmpty(), "Список эпиков не пуст");
+    }
+
+    @Test
+    void ShouldUpdateSubTask() {
+        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewEpic(epic);
+        Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
+                epic.getId());
+        taskManager.addNewSubtask(subtask1);
+        Subtask subtask2 = new Subtask(subtask1.getId(),"Купить куриные крылья", "В мясном",
+                TaskStatus.IN_PROGRESS, epic.getId());
+        taskManager.updateSubtask(subtask2);
+
+        assertEquals(subtask1, subtask2, "Подзадачи не равны");
+    }
+
+    @Test
+    void ShouldUpdateEpic() {
+        Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewEpic(epic1);
+        Epic epic2 = new Epic(epic1.getId(), "Купить древесный уголь", "В гипермаркете",
+                TaskStatus.IN_PROGRESS);
+        taskManager.updateEpicTask(epic2);
+
+        assertEquals(epic1, epic2, "Эпики не равны");
+    }
+
+    @Test
+    void ShouldDeleteTask() {
+        Task task1 = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewTask(task1);
+        Task task2 = new Task("Купить мясо", "В мясном магазине", TaskStatus.IN_PROGRESS);
+        taskManager.addNewTask(task2);
+        taskManager.deleteTaskById(task1.getId());
+        final List<Task> tasks = taskManager.getTasks();
+
+        assertEquals(1, tasks.size(), "Задача не удалена");
+    }
+
+    @Test
+    void ShouldDeleteSubTask() {
+        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewEpic(epic);
+        Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
+                epic.getId());
+        taskManager.addNewSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Купить куриные крылья", "В мясном", TaskStatus.IN_PROGRESS,
+                epic.getId());
+        taskManager.addNewSubtask(subtask2);
+        taskManager.deleteSubtaskById(subtask1.getId());
+        final List<Subtask> subtasks = taskManager.getSubTasks();
+
+        assertEquals(1, subtasks.size(), "Подзадача не удалена");
+    }
+
+    @Test
+    void ShouldDeleteEpic() {
+        Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewEpic(epic1);
+        Epic epic2 = new Epic( "Купить древесный уголь", "В гипермаркете", TaskStatus.IN_PROGRESS);
+        taskManager.addNewEpic(epic2);
+        taskManager.deleteEpicTaskById(epic1.getId());
+        final List<Epic> epics = taskManager.getEpics();
+
+        assertEquals(1, epics.size(), "Эпик не удален");
     }
 }

@@ -17,13 +17,16 @@ public class Main {
 
         taskManager.addNewTask(task1);
         taskManager.addNewTask(task2);
+        taskManager.getTaskById(task1.getId());
+        taskManager.getTaskById(task2.getId());
 
-        Task task3 = new Task("Сделать работу", "123", TaskStatus.DONE);
+        Task task3 = new Task(task1.getId(),"Сделать работу", "123", TaskStatus.DONE);
         taskManager.updateTask(task3);
 
         Epic epic1 = new Epic("Сделать работу", "Нужно обзвонить потенциальных клиентов",
                 TaskStatus.NEW);
         taskManager.addNewEpic(epic1);
+        taskManager.getEpicById(epic1.getId());
 
         Subtask subtask1 = new Subtask("Позвонить по направлению Краснодар", "Прикубанский и" +
                 " Карасунский округи", TaskStatus.IN_PROGRESS, epic1.getId());
@@ -31,14 +34,18 @@ public class Main {
                 " и Советский районы", TaskStatus.IN_PROGRESS, epic1.getId());
         taskManager.addNewSubtask(subtask1);
         taskManager.addNewSubtask(subtask2);
+        taskManager.getSubtaskById(subtask1.getId());
+        taskManager.getSubtaskById(subtask2.getId());
 
         Epic epic2 = new Epic("Прочитать книгу", "Прочитать книгу за 3 дня", TaskStatus.NEW);
         taskManager.addNewEpic(epic2);
+        taskManager.getEpicById(epic2.getId());
 
         Subtask subtask3 = new Subtask("Прочитать первые 10 страниц", "Успеть до конца дня прочитать " +
                 "10 страниц", TaskStatus.IN_PROGRESS, epic2.getId());
-
         taskManager.addNewSubtask(subtask3);
+        taskManager.getSubtaskById(subtask3.getId());
+
         task1.setTaskStatus(TaskStatus.IN_PROGRESS);
         subtask3.setTaskStatus(TaskStatus.DONE);
         taskManager.deleteTaskById(1);
