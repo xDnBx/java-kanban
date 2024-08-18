@@ -1,6 +1,6 @@
+package managers;
+
 import enums.TaskStatus;
-import managers.Managers;
-import managers.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
@@ -18,12 +18,12 @@ class InMemoryTaskManagerTest {
     TaskManager taskManager;
 
     @BeforeEach
-    void BeforeEach() {
+    void beforeEach() {
         taskManager = Managers.getDefault();
     }
 
     @Test
-    void CanAddNewTaskAndGetTaskById() {
+    void canAddNewTaskAndGetTaskById() {
         Task task = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewTask(task);
         final int taskId = task.getId();
@@ -40,7 +40,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void CanAddNewSubTaskAndGetSubTaskById() {
+    void canAddNewSubTaskAndGetSubTaskById() {
         Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewEpic(epic);
         Subtask subtask = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
@@ -61,7 +61,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void CanAddNewEpicAndGetEpicById() {
+    void canAddNewEpicAndGetEpicById() {
         Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewEpic(epic);
         final int epicId = epic.getId();
@@ -115,7 +115,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void ShouldUpdateSubTask() {
+    void shouldUpdateSubTask() {
         Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
@@ -129,7 +129,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void ShouldUpdateEpic() {
+    void shouldUpdateEpic() {
         Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewEpic(epic1);
         Epic epic2 = new Epic(epic1.getId(), "Купить древесный уголь", "В гипермаркете",
@@ -140,7 +140,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void ShouldDeleteTask() {
+    void shouldDeleteTask() {
         Task task1 = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewTask(task1);
         Task task2 = new Task("Купить мясо", "В мясном магазине", TaskStatus.IN_PROGRESS);
@@ -152,7 +152,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void ShouldDeleteSubTask() {
+    void shouldDeleteSubTask() {
         Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
@@ -168,7 +168,7 @@ class InMemoryTaskManagerTest {
     }
 
     @Test
-    void ShouldDeleteEpic() {
+    void shouldDeleteEpic() {
         Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewEpic(epic1);
         Epic epic2 = new Epic( "Купить древесный уголь", "В гипермаркете", TaskStatus.IN_PROGRESS);

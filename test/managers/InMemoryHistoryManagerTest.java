@@ -1,7 +1,6 @@
+package managers;
+
 import enums.TaskStatus;
-import managers.HistoryManager;
-import managers.Managers;
-import managers.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Task;
@@ -16,12 +15,12 @@ class InMemoryHistoryManagerTest {
     TaskManager taskManager;
 
     @BeforeEach
-    void BeforeEach() {
+    void beforeEach() {
         taskManager = Managers.getDefault();
     }
 
     @Test
-    void CanSavePreviousTaskInHistory() {
+    void canSavePreviousTaskInHistory() {
         Task task1 = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewTask(task1);
         taskManager.getTaskById(task1.getId());
