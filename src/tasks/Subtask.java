@@ -2,7 +2,7 @@ package tasks;
 
 import enums.TaskStatus;
 
-public class Subtask extends Task{
+public class Subtask extends Task {
     protected final int epicTaskId;
 
     public Subtask(String name, String description, TaskStatus taskStatus, int epicTaskId) {
