@@ -5,9 +5,9 @@ public class Node<T> {
     public Node<T> next;
     public Node<T> prev;
 
-    public Node(T data) {
+    public Node(T data, Node<T> next, Node<T> prev) {
         this.data = data;
-        this.next = null;
-        this.prev = null;
+        this.next = next;
+        this.prev = prev;
     }
 }
