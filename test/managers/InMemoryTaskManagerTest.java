@@ -10,7 +10,9 @@ import tasks.Task;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InMemoryTaskManagerTest {
@@ -177,5 +179,51 @@ class InMemoryTaskManagerTest {
         final List<Epic> epics = taskManager.getEpics();
 
         assertEquals(1, epics.size(), "Эпик не удален");
+    }
+
+    @Test
+    void shouldDeleteSubTaskAndNotSaveOldId() {
+        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewEpic(epic);
+        Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
+                epic.getId());
+        taskManager.addNewSubtask(subtask1);
+        final int subTaskId = subtask1.getId();
+        taskManager.deleteSubtaskById(subTaskId);
+        Subtask delSubTask = taskManager.getSubtaskById(subTaskId);
+
+        assertNull(delSubTask, "Подзадача не удалена");
+    }
+
+    @Test
+    void shouldDeleteSubTaskAndEpicNotContains() {
+        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewEpic(epic);
+        Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
+                epic.getId());
+        taskManager.addNewSubtask(subtask1);
+        Subtask subtask2 = new Subtask("Купить куриные крылья", "В мясном", TaskStatus.IN_PROGRESS,
+                epic.getId());
+        taskManager.addNewSubtask(subtask2);
+        final int subTaskId = subtask1.getId();
+        taskManager.deleteSubtaskById(subTaskId);
+        final List<Subtask> subtasks = epic.getSubtaskEpic();
+
+        assertFalse(subtasks.contains(subtask1), "Подзадача не удалена");
+    }
+
+    @Test
+    void taskShouldMatchWhenUseSetters() {
+        Task task1 = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
+        taskManager.addNewTask(task1);
+        task1.setName("Купить мясо");
+        task1.setDescription("В мясном магазине");
+        task1.setTaskStatus(TaskStatus.DONE);
+        taskManager.updateTask(task1);
+        Task task2 = taskManager.getTaskById(task1.getId());
+
+        assertEquals("Купить мясо", task2.getName(), "Имена не совпадают");
+        assertEquals("В мясном магазине", task2.getDescription(), "Описания не совпадают");
+        assertEquals(TaskStatus.DONE, task2.getTaskStatus(), "Статусы не совпадают");
     }
 }
