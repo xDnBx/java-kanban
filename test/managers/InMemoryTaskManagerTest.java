@@ -123,7 +123,7 @@ class InMemoryTaskManagerTest {
         Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
                 epic.getId());
         taskManager.addNewSubtask(subtask1);
-        Subtask subtask2 = new Subtask(subtask1.getId(),"Купить куриные крылья", "В мясном",
+        Subtask subtask2 = new Subtask(subtask1.getId(), "Купить куриные крылья", "В мясном",
                 TaskStatus.IN_PROGRESS, epic.getId());
         taskManager.updateSubtask(subtask2);
 
@@ -173,7 +173,7 @@ class InMemoryTaskManagerTest {
     void shouldDeleteEpic() {
         Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
         taskManager.addNewEpic(epic1);
-        Epic epic2 = new Epic( "Купить древесный уголь", "В гипермаркете", TaskStatus.IN_PROGRESS);
+        Epic epic2 = new Epic("Купить древесный уголь", "В гипермаркете", TaskStatus.IN_PROGRESS);
         taskManager.addNewEpic(epic2);
         taskManager.deleteEpicTaskById(epic1.getId());
         final List<Epic> epics = taskManager.getEpics();
