@@ -50,8 +50,8 @@ class FileBackedTaskManagerTest {
         taskManager.addNewSubtask(subtask2);
         taskManager.addNewSubtask(subtask3);
 
-        String tasks = "ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC;" +
-                "1,TASK,task1,NEW,description1;" +
+        String tasks = FileBackedTaskManager.HEADER +
+                ";1,TASK,task1,NEW,description1;" +
                 "2,TASK,task2,IN_PROGRESS,description2;" +
                 "3,EPIC,epic1,IN_PROGRESS,description1;" +
                 "4,SUBTASK,subtask1,IN_PROGRESS,description1,3;" +

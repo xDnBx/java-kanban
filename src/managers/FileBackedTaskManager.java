@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     protected File file;
-    public final String HEADER = "ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC\n";
+    public static final String HEADER = "ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC";
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -102,7 +102,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (Writer fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
-            fileWriter.write(HEADER);
+            fileWriter.write(HEADER + "\n");
             for (Task task : getTasks()) {
                 fileWriter.write(toString(task));
             }
