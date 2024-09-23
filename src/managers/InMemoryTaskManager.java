@@ -260,4 +260,8 @@ public class InMemoryTaskManager implements TaskManager {
     private int generateNewId() {
         return id++;
     }
+
+    public void afterLoadId(int newId) {
+        id = newId + 1;
+    }
 }

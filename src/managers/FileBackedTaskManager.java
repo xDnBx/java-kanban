@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     protected File file;
+    public final String HEADER = "ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC\n";
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -101,7 +102,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (Writer fileWriter = new FileWriter(file, StandardCharsets.UTF_8)) {
-            fileWriter.write("ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC\n");
+            fileWriter.write(HEADER);
             for (Task task : getTasks()) {
                 fileWriter.write(toString(task));
             }
@@ -121,20 +122,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             return null;
         }
 
-        String taskClass = task.getClass().getName().toUpperCase().substring(6);
+        TaskType taskClass = task.getTaskType();
         String taskString = task.getId() + "," + taskClass + "," + task.getName() + "," + task.getTaskStatus() +
                 "," + task.getDescription();
 
-        if (taskClass.equals(TaskType.TASK.toString()) || taskClass.equals(TaskType.EPIC.toString())) {
-            taskString = taskString + "\n";
-        } else if (taskClass.equals(TaskType.SUBTASK.toString())) {
+        if (taskClass.equals(TaskType.SUBTASK)) {
             Subtask subtask = (Subtask) task;
-            taskString = taskString + "," + subtask.getEpicTaskId() + "\n";
+            taskString = taskString + "," + subtask.getEpicTaskId();
         }
-        return taskString;
+        return taskString + "\n";
     }
 
     public static FileBackedTaskManager loadFromFile(File file) {
+        int maxId = 0;
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             FileBackedTaskManager taskManager = new FileBackedTaskManager(file);
 
@@ -142,16 +142,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 String line = br.readLine();
                 if (!line.startsWith("ID")) {
                     Task task = fromString(line);
-                    String taskClass = task.getClass().getName().toUpperCase().substring(6);
-                    if (taskClass.equals(TaskType.TASK.toString())) {
+                    TaskType taskClass = task.getTaskType();
+                    if (taskClass.equals(TaskType.TASK)) {
                         taskManager.tasks.put(task.getId(), task);
-                    } else if (taskClass.equals(TaskType.SUBTASK.toString())) {
-                        taskManager.subtasks.put(task.getId(), (Subtask) task);
-                    } else if (taskClass.equals(TaskType.EPIC.toString())) {
+                    } else if (taskClass.equals(TaskType.EPIC)) {
                         taskManager.epics.put(task.getId(), (Epic) task);
+                    } else if (taskClass.equals(TaskType.SUBTASK)) {
+                        Subtask subtask = (Subtask) task;
+                        taskManager.subtasks.put(subtask.getId(), subtask);
+                        int epicId = subtask.getEpicTaskId();
+                        Epic epic = taskManager.epics.get(epicId);
+                        epic.addSubtaskEpic(subtask);
+                    }
+                    if (task.getId() > maxId) {
+                        maxId = task.getId();
                     }
                 }
             }
+            taskManager.afterLoadId(maxId);
             return taskManager;
         } catch (IOException e) {
             throw new ManagerLoadException("Ошибка при чтении файла: " + e.getMessage());
