@@ -1,4 +1,6 @@
 import enums.TaskStatus;
+import enums.TaskType;
+import managers.FileBackedTaskManager;
 import managers.Managers;
 import managers.TaskManager;
 import tasks.Epic;
@@ -11,51 +13,31 @@ public class Main {
 
         TaskManager taskManager = Managers.getDefault();
 
-        Task task1 = new Task("Помыть машину", "В четверг нужно помыть машину", TaskStatus.NEW);
-        Task task2 = new Task("Приготовить ужин", "Приготовить котлеты с пюрешкой",
-                TaskStatus.IN_PROGRESS);
+        Task task1 = new Task("task1", "description1", TaskStatus.NEW);
+        Task task2 = new Task("task2", "description2", TaskStatus.IN_PROGRESS);
         taskManager.addNewTask(task1);
         taskManager.addNewTask(task2);
-
-        Epic epic1 = new Epic("Сделать работу", "Нужно обзвонить потенциальных клиентов",
-                TaskStatus.NEW);
+        Epic epic1 = new Epic("epic1", "description1", TaskStatus.IN_PROGRESS);
         taskManager.addNewEpic(epic1);
-
-        Subtask subtask1 = new Subtask("Позвонить по направлению Краснодар", "Прикубанский и" +
-                " Карасунский округи", TaskStatus.IN_PROGRESS, epic1.getId());
-        Subtask subtask2 = new Subtask("Позвонить по направлению Ростов", "Ворошиловский, Октябрьский" +
-                " и Советский районы", TaskStatus.IN_PROGRESS, epic1.getId());
-        Subtask subtask3 = new Subtask("Позвонить по направлению Сочи", "Адлерский, Лазаревский" +
-                " и Хостинский районы", TaskStatus.IN_PROGRESS, epic1.getId());
+        Subtask subtask1 = new Subtask("subtask1", "description1", TaskStatus.IN_PROGRESS,
+                epic1.getId());
+        Subtask subtask2 = new Subtask("subtask2", "description2", TaskStatus.IN_PROGRESS,
+                epic1.getId());
+        Subtask subtask3 = new Subtask("subtask3", "description3", TaskStatus.IN_PROGRESS,
+                epic1.getId());
         taskManager.addNewSubtask(subtask1);
         taskManager.addNewSubtask(subtask2);
         taskManager.addNewSubtask(subtask3);
 
-        Epic epic2 = new Epic("Прочитать книгу", "Прочитать книгу за 3 дня", TaskStatus.NEW);
-        taskManager.addNewEpic(epic2);
+        System.out.println(subtask1.getTaskType());
+        System.out.println(epic1.getTaskType());
+        System.out.println(subtask1.getTaskType().equals(TaskType.SUBTASK));
 
-        taskManager.getTaskById(task1.getId());
-        taskManager.getTaskById(task2.getId());
-        taskManager.getTaskById(task2.getId());
-        taskManager.getTaskById(task1.getId());
-        taskManager.getTaskById(task1.getId());
-        taskManager.getTaskById(task1.getId());
-        taskManager.getTaskById(task2.getId());
-        taskManager.getEpicById(epic1.getId());
-        taskManager.getEpicById(epic2.getId());
-        taskManager.getSubtaskById(subtask1.getId());
-        taskManager.getSubtaskById(subtask2.getId());
-        taskManager.getEpicById(epic2.getId());
-        taskManager.getSubtaskById(subtask3.getId());
-        taskManager.getSubtaskById(subtask3.getId());
-        taskManager.getEpicById(epic1.getId());
-        taskManager.getSubtaskById(subtask3.getId());
-        taskManager.getSubtaskById(subtask2.getId());
-        taskManager.getSubtaskById(subtask2.getId());
-        taskManager.getSubtaskById(subtask1.getId());
-        taskManager.getEpicById(epic2.getId());
+        TaskManager taskManager1 = FileBackedTaskManager.loadFromFile(Managers.FILE_CSV);
+        Task task3 = new Task("task3", "description3", TaskStatus.NEW);
+        taskManager1.addNewTask(task3);
 
-        printAllTasks(taskManager);
+        printAllTasks(taskManager1);
     }
 
     private static void printAllTasks(TaskManager manager) {
