@@ -1,6 +1,7 @@
 package tasks;
 
 import enums.TaskStatus;
+import enums.TaskType;
 
 import java.util.Objects;
 
@@ -10,11 +11,13 @@ public class Task {
     protected String name;
     protected String description;
     protected TaskStatus taskStatus;
+    protected TaskType taskType;
 
     public Task(String name, String description, TaskStatus taskStatus) {
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
+        this.taskType = TaskType.TASK;
     }
 
     public Task(int id, String name, String description, TaskStatus taskStatus) {
@@ -22,10 +25,15 @@ public class Task {
         this.name = name;
         this.description = description;
         this.taskStatus = taskStatus;
+        this.taskType = TaskType.TASK;
     }
 
     public String getName() {
         return name;
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
     }
 
     public void setName(String name) {
