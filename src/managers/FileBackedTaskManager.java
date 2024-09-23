@@ -159,7 +159,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     }
                 }
             }
-            taskManager.afterLoadId(maxId);
+            taskManager.id = maxId + 1;
             return taskManager;
         } catch (IOException e) {
             throw new ManagerLoadException("Ошибка при чтении файла: " + e.getMessage());
