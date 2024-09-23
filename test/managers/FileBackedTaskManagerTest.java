@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileBackedTaskManagerTest {
@@ -91,12 +92,34 @@ class FileBackedTaskManagerTest {
 
         TaskManager taskManager1 = FileBackedTaskManager.loadFromFile(tempFile);
 
-        assertArrayEquals(taskManager.getTasks().toArray(), taskManager1.getTasks().toArray(),
-                "Задачи не равны");
-        assertArrayEquals(taskManager.getEpics().toArray(), taskManager1.getEpics().toArray(),
-                "Эпики не равны");
-        assertArrayEquals(taskManager.getSubTasks().toArray(), taskManager1.getSubTasks().toArray(),
-                "Подзадачи не равны");
+        assertEquals(taskManager.getTaskById(1).getId(), taskManager1.getTaskById(1).getId(),
+                "id задач не равны");
+        assertEquals(taskManager.getTaskById(1).getName(), taskManager1.getTaskById(1).getName(),
+                "Имена задач не равны");
+        assertEquals(taskManager.getTaskById(1).getDescription(), taskManager1.getTaskById(1).getDescription(),
+                "Описания задач не равны");
+        assertEquals(taskManager.getTaskById(1).getTaskStatus(), taskManager1.getTaskById(1).getTaskStatus(),
+                "Статусы задач не равны");
+        assertEquals(taskManager.getEpicById(3).getId(), taskManager1.getEpicById(3).getId(),
+                "id эпиков не равны");
+        assertEquals(taskManager.getEpicById(3).getName(), taskManager1.getEpicById(3).getName(),
+                "Имена эпиков не равны");
+        assertEquals(taskManager.getEpicById(3).getDescription(), taskManager1.getEpicById(3).getDescription(),
+                "Описания эпиков не равны");
+        assertEquals(taskManager.getEpicById(3).getTaskStatus(), taskManager1.getEpicById(3).getTaskStatus(),
+                "Статусы эпиков не равны");
+        assertArrayEquals(taskManager.getEpicById(3).getSubtaskEpic().toArray(),
+                taskManager1.getEpicById(3).getSubtaskEpic().toArray(),"Списки подзадач эпиков не равны");
+        assertEquals(taskManager.getSubtaskById(4).getId(),
+                taskManager1.getSubtaskById(4).getId(),"id подзадач не равны");
+        assertEquals(taskManager.getSubtaskById(4).getName(),
+                taskManager1.getSubtaskById(4).getName(),"Имена подзадач не равны");
+        assertEquals(taskManager.getSubtaskById(4).getDescription(),
+                taskManager1.getSubtaskById(4).getDescription(),"Описания подзадач не равны");
+        assertEquals(taskManager.getSubtaskById(4).getTaskStatus(),
+                taskManager1.getSubtaskById(4).getTaskStatus(),"Статусы подзадач не равны");
+        assertEquals(taskManager.getSubtaskById(4).getEpicTaskId(),
+                taskManager1.getSubtaskById(4).getEpicTaskId(),"Эпики подзадач не равны");
     }
 
     @Test
