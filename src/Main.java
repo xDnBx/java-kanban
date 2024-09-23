@@ -1,4 +1,6 @@
 import enums.TaskStatus;
+import enums.TaskType;
+import managers.FileBackedTaskManager;
 import managers.Managers;
 import managers.TaskManager;
 import tasks.Epic;
@@ -27,7 +29,15 @@ public class Main {
         taskManager.addNewSubtask(subtask2);
         taskManager.addNewSubtask(subtask3);
 
-        printAllTasks(taskManager);
+        System.out.println(subtask1.getTaskType());
+        System.out.println(epic1.getTaskType());
+        System.out.println(subtask1.getTaskType().equals(TaskType.SUBTASK));
+
+        TaskManager taskManager1 = FileBackedTaskManager.loadFromFile(Managers.FILE_CSV);
+        Task task3 = new Task("task3", "description3", TaskStatus.NEW);
+        taskManager1.addNewTask(task3);
+
+        printAllTasks(taskManager1);
     }
 
     private static void printAllTasks(TaskManager manager) {
