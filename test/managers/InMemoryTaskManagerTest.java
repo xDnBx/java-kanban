@@ -1,6 +1,7 @@
 package managers;
 
 import enums.TaskStatus;
+import exceptions.TaskTimeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
@@ -12,10 +13,13 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InMemoryTaskManagerTest {
@@ -236,5 +240,98 @@ class InMemoryTaskManagerTest {
         assertEquals("Купить мясо", task2.getName(), "Имена не совпадают");
         assertEquals("В мясном магазине", task2.getDescription(), "Описания не совпадают");
         assertEquals(TaskStatus.DONE, task2.getTaskStatus(), "Статусы не совпадают");
+    }
+
+    @Test
+    void epicShouldHaveStatusNewWhenSubtasksHaveStatusNew() {
+        Epic epic1 = new Epic("epic1", "description1");
+        taskManager.addNewEpic(epic1);
+        Subtask subtask1 = new Subtask("subtask1", "description1", TaskStatus.NEW,
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic1.getId());
+        Subtask subtask2 = new Subtask("subtask2", "description2", TaskStatus.NEW,
+                Duration.ofMinutes(60), LocalDateTime.of(2024, Month.JANUARY, 2, 11, 46), epic1.getId());
+        Subtask subtask3 = new Subtask("subtask3", "description3", TaskStatus.NEW,
+                Duration.ofMinutes(80), LocalDateTime.of(2024, Month.JANUARY, 5, 12, 47), epic1.getId());
+        taskManager.addNewSubtask(subtask1);
+        taskManager.addNewSubtask(subtask2);
+        taskManager.addNewSubtask(subtask3);
+
+        assertEquals(TaskStatus.NEW, epic1.getTaskStatus());
+    }
+
+    @Test
+    void epicShouldHaveStatusDoneWhenSubtasksHaveStatusDone() {
+        Epic epic1 = new Epic("epic1", "description1");
+        taskManager.addNewEpic(epic1);
+        Subtask subtask1 = new Subtask("subtask1", "description1", TaskStatus.DONE,
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic1.getId());
+        Subtask subtask2 = new Subtask("subtask2", "description2", TaskStatus.DONE,
+                Duration.ofMinutes(60), LocalDateTime.of(2024, Month.JANUARY, 2, 11, 46), epic1.getId());
+        Subtask subtask3 = new Subtask("subtask3", "description3", TaskStatus.DONE,
+                Duration.ofMinutes(80), LocalDateTime.of(2024, Month.JANUARY, 5, 12, 47), epic1.getId());
+        taskManager.addNewSubtask(subtask1);
+        taskManager.addNewSubtask(subtask2);
+        taskManager.addNewSubtask(subtask3);
+
+        assertEquals(TaskStatus.DONE, epic1.getTaskStatus());
+    }
+
+    @Test
+    void epicShouldHaveStatusInProgressWhenSubtasksHaveStatusNewAndDone() {
+        Epic epic1 = new Epic("epic1", "description1");
+        taskManager.addNewEpic(epic1);
+        Subtask subtask1 = new Subtask("subtask1", "description1", TaskStatus.NEW,
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic1.getId());
+        Subtask subtask2 = new Subtask("subtask2", "description2", TaskStatus.DONE,
+                Duration.ofMinutes(60), LocalDateTime.of(2024, Month.JANUARY, 2, 11, 46), epic1.getId());
+        Subtask subtask3 = new Subtask("subtask3", "description3", TaskStatus.DONE,
+                Duration.ofMinutes(80), LocalDateTime.of(2024, Month.JANUARY, 5, 12, 47), epic1.getId());
+        taskManager.addNewSubtask(subtask1);
+        taskManager.addNewSubtask(subtask2);
+        taskManager.addNewSubtask(subtask3);
+
+        assertEquals(TaskStatus.IN_PROGRESS, epic1.getTaskStatus());
+    }
+
+    @Test
+    void epicShouldHaveStatusInProgressWhenSubtasksHaveStatusInProgress() {
+        Epic epic1 = new Epic("epic1", "description1");
+        taskManager.addNewEpic(epic1);
+        Subtask subtask1 = new Subtask("subtask1", "description1", TaskStatus.IN_PROGRESS,
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic1.getId());
+        Subtask subtask2 = new Subtask("subtask2", "description2", TaskStatus.IN_PROGRESS,
+                Duration.ofMinutes(60), LocalDateTime.of(2024, Month.JANUARY, 2, 11, 46), epic1.getId());
+        Subtask subtask3 = new Subtask("subtask3", "description3", TaskStatus.IN_PROGRESS,
+                Duration.ofMinutes(80), LocalDateTime.of(2024, Month.JANUARY, 5, 12, 47), epic1.getId());
+        taskManager.addNewSubtask(subtask1);
+        taskManager.addNewSubtask(subtask2);
+        taskManager.addNewSubtask(subtask3);
+
+        assertEquals(TaskStatus.IN_PROGRESS, epic1.getTaskStatus());
+    }
+
+    @Test
+    void shouldThrowAndNotThrowExceptionWhenTaskTimeIsCrossing() {
+        Task task1 = new Task("task1", "description1");
+        task1.setStartTime(LocalDateTime.now());
+        task1.setDuration(Duration.ofHours(1));
+        taskManager.addNewTask(task1);
+        Task task2 = new Task("task2", "description2");
+        task2.setStartTime(LocalDateTime.now().plusMinutes(20));
+        task2.setDuration(Duration.ofMinutes(30));
+        Task task3 = new Task("task3", "description3");
+        task3.setStartTime(LocalDateTime.now().minusMinutes(20));
+        task3.setDuration(Duration.ofMinutes(40));
+        Task task4 = new Task("task4", "description4");
+        task4.setStartTime(LocalDateTime.now().plusMinutes(40));
+        task4.setDuration(Duration.ofHours(1));
+        Task task5 = new Task("task5", "description5");
+        task5.setStartTime(LocalDateTime.now().plusMinutes(70));
+        task5.setDuration(Duration.ofMinutes(40));
+
+        assertThrows(TaskTimeException.class, () -> taskManager.addNewTask(task2));
+        assertThrows(TaskTimeException.class, () -> taskManager.addNewTask(task3));
+        assertThrows(TaskTimeException.class, () -> taskManager.addNewTask(task4));
+        assertDoesNotThrow(() -> taskManager.addNewTask(task5), "Исключение выкидывается");
     }
 }

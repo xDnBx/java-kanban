@@ -20,12 +20,14 @@ public class Task {
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
+        this.taskType = TaskType.TASK;
     }
 
     public Task(int id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
+        this.taskType = TaskType.TASK;
     }
 
     public Task(String name, String description, TaskStatus taskStatus, Duration duration, LocalDateTime startTime) {

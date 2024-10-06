@@ -136,6 +136,7 @@ public class InMemoryTaskManager implements TaskManager {
         int newId = generateNewId();
         newTask.setId(newId);
         tasks.put(newTask.getId(), newTask);
+        addPrioritizedTask(tasks.get(newTask.getId()));
         return newTask;
     }
 
@@ -149,6 +150,7 @@ public class InMemoryTaskManager implements TaskManager {
             int newId = generateNewId();
             newSubtask.setId(newId);
             subtasks.put(newSubtask.getId(), newSubtask);
+            addPrioritizedTask(subtasks.get(newSubtask.getId()));
             Epic epicTask = epics.get(epicId);
             epicTask.addSubtaskEpic(newSubtask);
             updateEpicTaskStatus(epicTask);

@@ -138,12 +138,11 @@ class FileBackedTaskManagerTest {
         assertEquals(taskManager.getSubtaskById(4).getTaskStatus(),
                 taskManager1.getSubtaskById(4).getTaskStatus(), "Статусы подзадач не равны");
         assertEquals(taskManager.getSubtaskById(4).getDuration(),
-                taskManager1.getSubtaskById(4).getDuration(),"Продолжительности подзадач не равны");
+                taskManager1.getSubtaskById(4).getDuration(), "Продолжительности подзадач не равны");
         assertEquals(taskManager.getSubtaskById(4).getStartTime(),
-                taskManager1.getSubtaskById(4).getStartTime(),"Время начала подзадач не равны");
+                taskManager1.getSubtaskById(4).getStartTime(), "Время начала подзадач не равны");
         assertEquals(taskManager.getSubtaskById(4).getEpicTaskId(),
                 taskManager1.getSubtaskById(4).getEpicTaskId(), "Эпики подзадач не равны");
-
     }
 
     @Test
