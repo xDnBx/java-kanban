@@ -16,6 +16,8 @@ public interface TaskManager {
 
     List<Subtask> getSubtasksFromEpic(int epicId);
 
+    List<Task> getPrioritizedTasks();
+
     void clearTasks();
 
     void clearSubtasks();

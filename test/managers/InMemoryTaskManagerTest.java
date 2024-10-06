@@ -7,6 +7,9 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,7 +29,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void canAddNewTaskAndGetTaskById() {
-        Task task = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
+        Task task = new Task("Купить курицу", "В магазине", TaskStatus.NEW, Duration.ofMinutes(100),
+                LocalDateTime.of(2024, Month.JANUARY, 1, 8, 12));
         taskManager.addNewTask(task);
         final int taskId = task.getId();
         final Task savedTask = taskManager.getTaskById(taskId);
@@ -43,10 +47,10 @@ class InMemoryTaskManagerTest {
 
     @Test
     void canAddNewSubTaskAndGetSubTaskById() {
-        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic);
         Subtask subtask = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
-                epic.getId());
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic.getId());
         taskManager.addNewSubtask(subtask);
         final int subTaskId = subtask.getId();
         final Subtask savedSubTask = taskManager.getSubtaskById(subTaskId);
@@ -64,7 +68,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void canAddNewEpicAndGetEpicById() {
-        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic);
         final int epicId = epic.getId();
         final Epic savedEpic = taskManager.getEpicById(epicId);
@@ -81,9 +85,11 @@ class InMemoryTaskManagerTest {
 
     @Test
     void clearAllTasks() {
-        Task task1 = new Task(1, "Купить курицу", "В магазине", TaskStatus.NEW);
+        Task task1 = new Task(1, "Купить курицу", "В магазине", TaskStatus.NEW, Duration.ofMinutes(100),
+                LocalDateTime.of(2024, Month.JANUARY, 1, 8, 12));
         taskManager.addNewTask(task1);
-        Task task2 = new Task(1, "Купить мясо", "В мясном магазине", TaskStatus.IN_PROGRESS);
+        Task task2 = new Task(1, "Купить мясо", "В мясном магазине", TaskStatus.IN_PROGRESS,
+                Duration.ofMinutes(50), LocalDateTime.of(2024, Month.JANUARY, 4, 9, 44));
         taskManager.addNewTask(task2);
         taskManager.clearTasks();
 
@@ -92,13 +98,13 @@ class InMemoryTaskManagerTest {
 
     @Test
     void clearAllSubTasks() {
-        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
-                epic.getId());
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic.getId());
         taskManager.addNewSubtask(subtask1);
         Subtask subtask2 = new Subtask("Купить куриные крылья", "В мясном", TaskStatus.IN_PROGRESS,
-                epic.getId());
+                Duration.ofMinutes(60), LocalDateTime.of(2024, Month.JANUARY, 2, 11, 46), epic.getId());
         taskManager.addNewSubtask(subtask2);
         taskManager.clearSubtasks();
 
@@ -107,9 +113,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void clearAllEpics() {
-        Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic1 = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic1);
-        Epic epic2 = new Epic("Купить древесный уголь", "В гипермаркете", TaskStatus.IN_PROGRESS);
+        Epic epic2 = new Epic("Купить древесный уголь", "В гипермаркете");
         taskManager.addNewEpic(epic2);
         taskManager.clearEpicTasks();
 
@@ -118,13 +124,14 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldUpdateSubTask() {
-        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
-                epic.getId());
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic.getId());
         taskManager.addNewSubtask(subtask1);
         Subtask subtask2 = new Subtask(subtask1.getId(), "Купить куриные крылья", "В мясном",
-                TaskStatus.IN_PROGRESS, epic.getId());
+                TaskStatus.IN_PROGRESS, Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45),
+                epic.getId());
         taskManager.updateSubtask(subtask2);
 
         assertEquals(subtask1, subtask2, "Подзадачи не равны");
@@ -132,10 +139,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldUpdateEpic() {
-        Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic1 = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic1);
-        Epic epic2 = new Epic(epic1.getId(), "Купить древесный уголь", "В гипермаркете",
-                TaskStatus.IN_PROGRESS);
+        Epic epic2 = new Epic(epic1.getId(), "Купить древесный уголь", "В гипермаркете");
         taskManager.updateEpicTask(epic2);
 
         assertEquals(epic1, epic2, "Эпики не равны");
@@ -143,9 +149,11 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldDeleteTask() {
-        Task task1 = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
+        Task task1 = new Task(1, "Купить курицу", "В магазине", TaskStatus.NEW, Duration.ofMinutes(100),
+                LocalDateTime.of(2024, Month.JANUARY, 1, 8, 12));
         taskManager.addNewTask(task1);
-        Task task2 = new Task("Купить мясо", "В мясном магазине", TaskStatus.IN_PROGRESS);
+        Task task2 = new Task(1, "Купить мясо", "В мясном магазине", TaskStatus.IN_PROGRESS,
+                Duration.ofMinutes(50), LocalDateTime.of(2024, Month.JANUARY, 4, 9, 44));
         taskManager.addNewTask(task2);
         taskManager.deleteTaskById(task1.getId());
         final List<Task> tasks = taskManager.getTasks();
@@ -155,12 +163,13 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldDeleteSubTask() {
-        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
-                epic.getId());
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic.getId());
         taskManager.addNewSubtask(subtask1);
-        Subtask subtask2 = new Subtask("Купить куриные крылья", "В мясном", TaskStatus.IN_PROGRESS,
+        Subtask subtask2 = new Subtask(subtask1.getId(), "Купить куриные крылья", "В мясном",
+                TaskStatus.IN_PROGRESS, Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45),
                 epic.getId());
         taskManager.addNewSubtask(subtask2);
         taskManager.deleteSubtaskById(subtask1.getId());
@@ -171,9 +180,9 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldDeleteEpic() {
-        Epic epic1 = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic1 = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic1);
-        Epic epic2 = new Epic("Купить древесный уголь", "В гипермаркете", TaskStatus.IN_PROGRESS);
+        Epic epic2 = new Epic("Купить древесный уголь", "В гипермаркете");
         taskManager.addNewEpic(epic2);
         taskManager.deleteEpicTaskById(epic1.getId());
         final List<Epic> epics = taskManager.getEpics();
@@ -183,10 +192,10 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldDeleteSubTaskAndNotSaveOldId() {
-        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
-                epic.getId());
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic.getId());
         taskManager.addNewSubtask(subtask1);
         final int subTaskId = subtask1.getId();
         taskManager.deleteSubtaskById(subTaskId);
@@ -197,12 +206,13 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldDeleteSubTaskAndEpicNotContains() {
-        Epic epic = new Epic("Купить курицу", "В магазине", TaskStatus.NEW);
+        Epic epic = new Epic("Купить курицу", "В магазине");
         taskManager.addNewEpic(epic);
         Subtask subtask1 = new Subtask("Купить куриные ножки", "В мясном", TaskStatus.IN_PROGRESS,
-                epic.getId());
+                Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic.getId());
         taskManager.addNewSubtask(subtask1);
-        Subtask subtask2 = new Subtask("Купить куриные крылья", "В мясном", TaskStatus.IN_PROGRESS,
+        Subtask subtask2 = new Subtask(subtask1.getId(), "Купить куриные крылья", "В мясном",
+                TaskStatus.IN_PROGRESS, Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45),
                 epic.getId());
         taskManager.addNewSubtask(subtask2);
         final int subTaskId = subtask1.getId();
@@ -214,7 +224,8 @@ class InMemoryTaskManagerTest {
 
     @Test
     void taskShouldMatchWhenUseSetters() {
-        Task task1 = new Task("Купить курицу", "В магазине", TaskStatus.NEW);
+        Task task1 = new Task(1, "Купить курицу", "В магазине", TaskStatus.NEW, Duration.ofMinutes(100),
+                LocalDateTime.of(2024, Month.JANUARY, 1, 8, 12));
         taskManager.addNewTask(task1);
         task1.setName("Купить мясо");
         task1.setDescription("В мясном магазине");

@@ -16,10 +16,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     protected File file;
-    public static final String HEADER = "ID,TYPE,NAME,STATUS,DESCRIPTION,EPIC";
+    public static final String HEADER = "ID,TYPE,NAME,STATUS,DESCRIPTION,DURATION,START,END,EPIC";
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -124,11 +126,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         TaskType taskClass = task.getTaskType();
         String taskString = task.getId() + "," + taskClass + "," + task.getName() + "," + task.getTaskStatus() +
-                "," + task.getDescription();
+                "," + task.getDescription() + "," + task.getDuration().toMinutes() + "," + task.getStartTime();
 
-        if (taskClass.equals(TaskType.SUBTASK)) {
+        if (taskClass.equals(TaskType.TASK)) {
+            taskString = taskString + ",,";
+        } else if (taskClass.equals(TaskType.EPIC)) {
+            Epic epic = (Epic) task;
+            taskString = taskString + "," + epic.getEndTime();
+        } else if (taskClass.equals(TaskType.SUBTASK)) {
             Subtask subtask = (Subtask) task;
-            taskString = taskString + "," + subtask.getEpicTaskId();
+            taskString = taskString + ",," + subtask.getEpicTaskId();
         }
         return taskString + "\n";
     }
@@ -157,6 +164,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     if (task.getId() > maxId) {
                         maxId = task.getId();
                     }
+                    taskManager.prioritizedTasks.add(task);
                 }
             }
             taskManager.id = maxId + 1;
@@ -171,12 +179,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Task task;
 
         if (values[1].equals(TaskType.TASK.toString())) {
-            task = new Task(Integer.parseInt(values[0]), values[2], values[4], TaskStatus.valueOf(values[3]));
+            task = new Task(Integer.parseInt(values[0]), values[2], values[4], TaskStatus.valueOf(values[3]),
+                    Duration.ofMinutes(Integer.parseInt(values[5])), LocalDateTime.parse(values[6]));
         } else if (values[1].equals(TaskType.SUBTASK.toString())) {
             task = new Subtask(Integer.parseInt(values[0]), values[2], values[4], TaskStatus.valueOf(values[3]),
-                    Integer.parseInt(values[5]));
+                    Duration.ofMinutes(Integer.parseInt(values[5])), LocalDateTime.parse(values[6]),
+                    Integer.parseInt(values[8]));
         } else if (values[1].equals(TaskType.EPIC.toString())) {
-            task = new Epic(Integer.parseInt(values[0]), values[2], values[4], TaskStatus.valueOf(values[3]));
+            task = new Epic(Integer.parseInt(values[0]), values[2], values[4], TaskStatus.valueOf(values[3]),
+                    Duration.ofMinutes(Integer.parseInt(values[5])), LocalDateTime.parse(values[6]),
+                    LocalDateTime.parse(values[7]));
         } else {
             throw new TaskTypeException("Нет такого типа задачи: " + values[1]);
         }
