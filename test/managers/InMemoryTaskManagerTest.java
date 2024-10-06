@@ -173,7 +173,7 @@ class InMemoryTaskManagerTest {
                 Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic.getId());
         taskManager.addNewSubtask(subtask1);
         Subtask subtask2 = new Subtask(subtask1.getId(), "Купить куриные крылья", "В мясном",
-                TaskStatus.IN_PROGRESS, Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45),
+                TaskStatus.IN_PROGRESS, Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 4, 10, 45),
                 epic.getId());
         taskManager.addNewSubtask(subtask2);
         taskManager.deleteSubtaskById(subtask1.getId());
@@ -216,7 +216,7 @@ class InMemoryTaskManagerTest {
                 Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45), epic.getId());
         taskManager.addNewSubtask(subtask1);
         Subtask subtask2 = new Subtask(subtask1.getId(), "Купить куриные крылья", "В мясном",
-                TaskStatus.IN_PROGRESS, Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 3, 10, 45),
+                TaskStatus.IN_PROGRESS, Duration.ofMinutes(55), LocalDateTime.of(2024, Month.JANUARY, 4, 10, 45),
                 epic.getId());
         taskManager.addNewSubtask(subtask2);
         final int subTaskId = subtask1.getId();
