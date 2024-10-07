@@ -1,6 +1,7 @@
 package managers;
 
 import enums.TaskStatus;
+import exceptions.TaskTimeException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,21 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FileBackedTaskManagerTest {
+class FileBackedTaskManagerTest extends AbstractTaskManagerTest<FileBackedTaskManager> {
     protected File tempFile;
-    TaskManager taskManager;
+    FileBackedTaskManager taskManager;
 
-    @BeforeEach
-    void beforeEach() {
+    @Override
+    protected FileBackedTaskManager createTaskManager() {
         try {
             tempFile = File.createTempFile("data1", ".csv");
             taskManager = new FileBackedTaskManager(tempFile);
             tempFile.deleteOnExit();
+            return taskManager;
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
     }
 
@@ -58,12 +63,12 @@ class FileBackedTaskManagerTest {
         taskManager.addNewSubtask(subtask3);
 
         String tasks = FileBackedTaskManager.HEADER +
-                ";1,TASK,task1,NEW,description1,100,2024-01-01T08:12,,;" +
-                "2,TASK,task2,IN_PROGRESS,description2,50,2024-01-04T09:44,,;" +
+                ";1,TASK,task1,NEW,description1,100,2024-01-01T08:12,2024-01-01T09:52;" +
+                "2,TASK,task2,IN_PROGRESS,description2,50,2024-01-04T09:44,2024-01-04T10:34;" +
                 "3,EPIC,epic1,IN_PROGRESS,description1,195,2024-01-02T11:46,2024-01-05T14:07;" +
-                "4,SUBTASK,subtask1,NEW,description1,55,2024-01-03T10:45,,3;" +
-                "5,SUBTASK,subtask2,IN_PROGRESS,description2,60,2024-01-02T11:46,,3;" +
-                "6,SUBTASK,subtask3,DONE,description3,80,2024-01-05T12:47,,3";
+                "4,SUBTASK,subtask1,NEW,description1,55,2024-01-03T10:45,2024-01-03T11:40,3;" +
+                "5,SUBTASK,subtask2,IN_PROGRESS,description2,60,2024-01-02T11:46,2024-01-02T12:46,3;" +
+                "6,SUBTASK,subtask3,DONE,description3,80,2024-01-05T12:47,2024-01-05T14:07,3";
         List<String> listTasks = new ArrayList<>(List.of(tasks.split(";")));
 
         List<String> lines = new ArrayList<>();

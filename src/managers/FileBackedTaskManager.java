@@ -125,17 +125,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
 
         TaskType taskClass = task.getTaskType();
-        String taskString = task.getId() + "," + taskClass + "," + task.getName() + "," + task.getTaskStatus() +
-                "," + task.getDescription() + "," + task.getDuration().toMinutes() + "," + task.getStartTime();
+        String taskString = task.getId() + "," + taskClass + "," + task.getName() + "," + task.getTaskStatus() + "," +
+                task.getDescription() + "," + task.getDuration().toMinutes() + "," + task.getStartTime() + "," +
+                task.getEndTime();
 
-        if (taskClass.equals(TaskType.TASK)) {
-            taskString = taskString + ",,";
-        } else if (taskClass.equals(TaskType.EPIC)) {
-            Epic epic = (Epic) task;
-            taskString = taskString + "," + epic.getEndTime();
-        } else if (taskClass.equals(TaskType.SUBTASK)) {
+        if (taskClass.equals(TaskType.SUBTASK)) {
             Subtask subtask = (Subtask) task;
-            taskString = taskString + ",," + subtask.getEpicTaskId();
+            taskString = taskString + "," + subtask.getEpicTaskId();
         }
         return taskString + "\n";
     }
@@ -152,11 +148,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     TaskType taskClass = task.getTaskType();
                     if (taskClass.equals(TaskType.TASK)) {
                         taskManager.tasks.put(task.getId(), task);
+                        taskManager.prioritizedTasks.add(task);
                     } else if (taskClass.equals(TaskType.EPIC)) {
                         taskManager.epics.put(task.getId(), (Epic) task);
                     } else if (taskClass.equals(TaskType.SUBTASK)) {
                         Subtask subtask = (Subtask) task;
                         taskManager.subtasks.put(subtask.getId(), subtask);
+                        taskManager.prioritizedTasks.add(subtask);
                         int epicId = subtask.getEpicTaskId();
                         Epic epic = taskManager.epics.get(epicId);
                         epic.addSubtaskEpic(subtask);
@@ -164,7 +162,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     if (task.getId() > maxId) {
                         maxId = task.getId();
                     }
-                    taskManager.prioritizedTasks.add(task);
                 }
             }
             taskManager.id = maxId + 1;

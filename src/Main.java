@@ -19,7 +19,7 @@ public class Main {
         Task task1 = new Task("task1", "description1", TaskStatus.NEW, Duration.ofMinutes(100),
                 LocalDateTime.of(2024, Month.JANUARY, 1, 8, 12));
         Task task2 = new Task("task2", "description2", TaskStatus.IN_PROGRESS, Duration.ofMinutes(50),
-                LocalDateTime.of(2024, Month.JANUARY, 4, 8, 44));
+                LocalDateTime.of(2024, Month.JANUARY, 4, 9, 44));
         taskManager.addNewTask(task1);
         taskManager.addNewTask(task2);
         Epic epic1 = new Epic("epic1", "description1");
@@ -38,7 +38,7 @@ public class Main {
         Task task3 = new Task("task3", "description3", TaskStatus.NEW, Duration.ofMinutes(90),
                 LocalDateTime.of(2024, Month.JANUARY, 6, 13, 48));
         taskManager1.addNewTask(task3);
-        System.out.println(taskManager.getPrioritizedTasks());
+        System.out.println(taskManager1.getPrioritizedTasks());
 
         printAllTasks(taskManager);
     }
