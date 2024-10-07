@@ -173,10 +173,10 @@ public class InMemoryTaskManager implements TaskManager {
         int taskId = updatedTask.getId();
 
         if (tasks.containsKey(taskId)) {
-            deletePrioritizedTask(tasks.get(taskId));
             if (isPrioritizedTasksCrossing(updatedTask)) {
                 throw new TaskTimeException("Обновленная задача пересекается по времени с другой задачей");
             }
+            deletePrioritizedTask(tasks.get(taskId));
             tasks.put(taskId, updatedTask);
             addPrioritizedTask(updatedTask);
         } else {
@@ -190,10 +190,10 @@ public class InMemoryTaskManager implements TaskManager {
         int subtaskId = updatedSubtask.getId();
         if (subtasks.containsKey(subtaskId)) {
             Subtask subtaskToDelete = subtasks.get(subtaskId);
-            deletePrioritizedTask(subtaskToDelete);
             if (isPrioritizedTasksCrossing(updatedSubtask)) {
                 throw new TaskTimeException("Обновленная подзадача пересекается по времени с другой подзадачей");
             }
+            deletePrioritizedTask(subtaskToDelete);
             subtasks.put(subtaskId, updatedSubtask);
             addPrioritizedTask(updatedSubtask);
             Epic epicTask = epics.get(epicId);
@@ -325,6 +325,7 @@ public class InMemoryTaskManager implements TaskManager {
     private boolean isPrioritizedTasksCrossing(Task task) {
         return prioritizedTasks.stream()
                 .filter(task1 -> task1.getStartTime() != null)
+                .filter(t -> t.getId() != task.getId())
                 .anyMatch(task1 -> isTasksCrossing(task1, task));
     }
 
