@@ -40,7 +40,6 @@ public class Main {
         taskManager1.addNewTask(task3);
         System.out.println(taskManager1.getPrioritizedTasks());
 
-
         printAllTasks(taskManager);
     }
 

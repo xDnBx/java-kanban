@@ -49,8 +49,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epicTask = epics.get(epicId);
             return epicTask.getSubtaskEpic();
         } else {
-            System.out.println("Эпика с таким id не существует");
-            return new ArrayList<>();
+            throw new NotFoundException("Эпика с таким id не существует");
         }
     }
 

@@ -72,6 +72,8 @@ public class EpicsHandler extends BaseHttpHandler {
                     sendNotFound(httpExchange);
                 }
             }
+        } catch (NotFoundException e) {
+            sendNotFound(httpExchange);
         } catch (Exception e) {
             e.printStackTrace();
             sendText(httpExchange, "Internal Server Error", 500);

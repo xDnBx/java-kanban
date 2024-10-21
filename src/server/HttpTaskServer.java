@@ -37,7 +37,7 @@ public class HttpTaskServer {
     }
 
     public static void main(String[] args) throws IOException {
-        TaskManager manager = FileBackedTaskManager.loadFromFile(Managers.FILE_CSV);
+        TaskManager manager = Managers.getDefault();
         HttpTaskServer server = new HttpTaskServer(manager);
         server.start();
     }
