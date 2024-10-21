@@ -1,6 +1,8 @@
 package managers;
 
 import enums.TaskStatus;
+import managers.interfaces.HistoryManager;
+import managers.interfaces.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Task;
