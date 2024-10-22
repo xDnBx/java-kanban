@@ -14,7 +14,9 @@ public abstract class BaseHttpHandler implements HttpHandler {
     protected final TaskManager taskManager;
     protected Gson gson = Managers.getGson();
 
-    protected BaseHttpHandler(TaskManager taskManager) {this.taskManager = taskManager;}
+    protected BaseHttpHandler(TaskManager taskManager) {
+        this.taskManager = taskManager;
+    }
 
     protected void sendText(HttpExchange httpExchange, String text, int statusCode) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);
