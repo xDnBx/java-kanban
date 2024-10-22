@@ -1,13 +1,20 @@
 package server.handlers;
 
+import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import managers.Managers;
+import managers.interfaces.TaskManager;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 public abstract class BaseHttpHandler implements HttpHandler {
+    protected final TaskManager taskManager;
+    protected Gson gson = Managers.getGson();
+
+    protected BaseHttpHandler(TaskManager taskManager) {this.taskManager = taskManager;}
 
     protected void sendText(HttpExchange httpExchange, String text, int statusCode) throws IOException {
         byte[] resp = text.getBytes(StandardCharsets.UTF_8);

@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import managers.interfaces.HistoryManager;
 import managers.interfaces.TaskManager;
-import server.DurationAdapter;
-import server.LocalDateTimeAdapter;
+import server.adapters.DurationAdapter;
+import server.adapters.LocalDateTimeAdapter;
 
 import java.io.File;
 import java.time.Duration;

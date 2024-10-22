@@ -145,4 +145,15 @@ class SubtasksHandlerTest {
         assertEquals(200, response.statusCode(), "Неверный статус");
         assertNull(taskManager.getSubtaskById(2), "Задача не удалена");
     }
+
+    @Test
+    void canReturnBadRequest() throws IOException, InterruptedException {
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create(URL))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+        HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(400, response.statusCode(), "Неверный статус");
+    }
 }

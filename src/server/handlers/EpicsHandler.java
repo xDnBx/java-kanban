@@ -1,10 +1,8 @@
 package server.handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import exceptions.NotFoundException;
 import exceptions.TaskTimeException;
-import managers.Managers;
 import managers.interfaces.TaskManager;
 import tasks.Epic;
 
@@ -12,11 +10,9 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class EpicsHandler extends BaseHttpHandler {
-    private final TaskManager taskManager;
-    Gson gson = Managers.getGson();
 
     public EpicsHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     @Override
@@ -84,6 +80,9 @@ public class EpicsHandler extends BaseHttpHandler {
         try {
             String path = httpExchange.getRequestURI().getPath();
             Epic epic = gson.fromJson(readText(httpExchange), Epic.class);
+            if (epic == null) {
+                throw new NotFoundException("Bad Request");
+            }
             if (Pattern.matches("^/epics$", path)) {
                 taskManager.addNewEpic(epic);
                 String response = gson.toJson(epic);
@@ -102,6 +101,8 @@ public class EpicsHandler extends BaseHttpHandler {
                     sendNotFound(httpExchange);
                 }
             }
+        } catch (NotFoundException e) {
+            sendText(httpExchange, "Bad Request", 400);
         } catch (TaskTimeException e) {
             sendHasInteractions(httpExchange);
         } catch (Exception e) {

@@ -1,10 +1,8 @@
 package server.handlers;
 
-import com.google.gson.Gson;
 import com.sun.net.httpserver.HttpExchange;
 import exceptions.NotFoundException;
 import exceptions.TaskTimeException;
-import managers.Managers;
 import managers.interfaces.TaskManager;
 import tasks.Task;
 
@@ -12,11 +10,9 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class TasksHandler extends BaseHttpHandler {
-    private final TaskManager taskManager;
-    Gson gson = Managers.getGson();
 
     public TasksHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
+        super(taskManager);
     }
 
     @Override
@@ -68,6 +64,9 @@ public class TasksHandler extends BaseHttpHandler {
         try {
             String path = httpExchange.getRequestURI().getPath();
             Task task = gson.fromJson(readText(httpExchange), Task.class);
+            if (task == null) {
+                throw new NotFoundException("Bad Request");
+            }
             if (Pattern.matches("^/tasks$", path)) {
                 taskManager.addNewTask(task);
                 String response = gson.toJson(task);
@@ -86,6 +85,8 @@ public class TasksHandler extends BaseHttpHandler {
                     sendNotFound(httpExchange);
                 }
             }
+        } catch (NotFoundException e) {
+            sendText(httpExchange, "Bad Request", 400);
         } catch (TaskTimeException e) {
             sendHasInteractions(httpExchange);
         } catch (Exception e) {
