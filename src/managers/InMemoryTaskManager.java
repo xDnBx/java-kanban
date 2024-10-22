@@ -1,7 +1,10 @@
 package managers;
 
 import enums.TaskStatus;
+import exceptions.NotFoundException;
 import exceptions.TaskTimeException;
+import managers.interfaces.HistoryManager;
+import managers.interfaces.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -46,8 +49,7 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epicTask = epics.get(epicId);
             return epicTask.getSubtaskEpic();
         } else {
-            System.out.println("Эпика с таким id не существует");
-            return new ArrayList<>();
+            throw new NotFoundException("Эпика с таким id не существует");
         }
     }
 
@@ -227,7 +229,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.remove(idToDelete);
             System.out.println("Задача с id " + idToDelete + " успешно удалена");
         } else {
-            System.out.println("Задачи с таким id не существует, попробуйте еще раз");
+            throw new NotFoundException("Задачи с таким id не существует, попробуйте еще раз");
         }
     }
 
@@ -245,7 +247,7 @@ public class InMemoryTaskManager implements TaskManager {
             updateEpicTaskTimes(epicTask);
             System.out.println("Подзадача с id " + idToDelete + " успешно удалена");
         } else {
-            System.out.println("Подзадачи с таким id не существует");
+            throw new NotFoundException("Подзадачи с таким id не существует");
         }
     }
 
@@ -263,7 +265,7 @@ public class InMemoryTaskManager implements TaskManager {
             epicTaskToDelete.clearSubtaskEpic();
             System.out.println("Эпик с id " + idToDelete + " и связанные с ним подзадачи успешно удалены");
         } else {
-            System.out.println("Эпика с таким id не существует");
+            throw new NotFoundException("Эпика с таким id не существует");
         }
     }
 
